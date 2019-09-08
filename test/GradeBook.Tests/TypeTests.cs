@@ -3,10 +3,34 @@ using Xunit;
 
 namespace GradeBook.Tests
 {
+    public delegate string WriteLogDelegate(string logMessage);
+
     public class TypeTests
     {
+        int count = 0;
+
         [Fact]
-        public void Test1()
+        public void WriteLogDelegateCanPointToMethod()
+        {
+            WriteLogDelegate log = ReturnMessage;
+            log += ReturnMessage;
+            log += IncrementCount;
+            var result = log("Hello!");
+            Assert.Equal(3, count);
+        }
+        string IncrementCount(string message)
+        {
+            count++;
+            return message.ToLower();
+        }
+        string ReturnMessage(string message)
+        {
+            count++;
+            return message;
+        }
+        
+        [Fact]
+        public void ValueTypeAlsoPassByValue()
         {
             var x = GetInt();
             SetInt(ref x);
@@ -30,9 +54,9 @@ namespace GradeBook.Tests
 
             Assert.Equal("New Name", book1.Name);
         }
-        private void GetBookSetName(ref Book book, string name)
+        private void GetBookSetName(ref DiskBook book, string name)
         {
-           book = new Book(name);
+           book = new DiskBook(name);
         }
 
         [Fact]
@@ -43,9 +67,9 @@ namespace GradeBook.Tests
 
             Assert.Equal("Book 1", book1.Name);
         }
-        private void GetBookSetName(Book book, string name)
+        private void GetBookSetName(DiskBook book, string name)
         {
-           book = new Book(name);
+           book = new DiskBook(name);
         }
 
         [Fact]
@@ -56,7 +80,7 @@ namespace GradeBook.Tests
 
             Assert.Equal("New Name", book1.Name);
         }
-        private void SetName(Book book, string name)
+        private void SetName(DiskBook book, string name)
         {
             book.Name = name;
         }
@@ -96,9 +120,9 @@ namespace GradeBook.Tests
             Assert.True(Object.ReferenceEquals(book1, book2));
         }
 
-        Book GetBook (string name)
+        DiskBook GetBook (string name)
         {
-            return new Book(name);
+            return new DiskBook(name);
         }
     }
 }

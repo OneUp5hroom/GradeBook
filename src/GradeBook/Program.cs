@@ -7,35 +7,11 @@ namespace GradeBook
     {
         static void Main(string[] args)
         {
-            var book = new Book("Scott's Grade Book");
+            Book book = new DiskBook("Scott's Grade Book");
+            book.GradeAdded += OnGradeAdded;
+
             Console.WriteLine("Please enter Grades for Scott, Q to quit");
-            while(true)
-            {
-                var input = Console.ReadLine();
-                if (input == "q" || input == "Q")
-                {
-                    break;
-                }
-                var grade = 0.0;
-                if (double.TryParse(input, out grade)) {
-                    try{
-                        book.AddGrade(grade);
-                    }
-                    catch(ArgumentException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    finally
-                    {
-                        Console.WriteLine("**");
-                    }
-                    
-                } 
-                else 
-                {
-                    Console.WriteLine($"What the heck was that crap? you think {input} looks like a grade?");
-                }
-            };
+            EnterGrades(book);
 
             var stats = book.GetStatistics();
 
@@ -43,6 +19,44 @@ namespace GradeBook
             Console.WriteLine($"The highest grade is {stats.High}");
             Console.WriteLine($"The average grade is {stats.Average}");
             Console.WriteLine($"The letter grade is {stats.Letter}");
+        }
+
+        private static void EnterGrades(Book book)
+        {
+            while (true)
+            {
+                var input = Console.ReadLine();
+                if (input == "q" || input == "Q")
+                {
+                    break;
+                }
+                var grade = 0.0;
+                if (double.TryParse(input, out grade))
+                {
+                    try
+                    {
+                        book.AddGrade(grade);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    finally
+                    {
+                        Console.WriteLine("**");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine($"What the heck was that crap? you think {input} looks like a grade?");
+                }
+            };
+        }
+
+        static void OnGradeAdded(object sender, EventArgs e)
+        {
+          Console.WriteLine("A Grade was Added");  
         }
     }
 }
